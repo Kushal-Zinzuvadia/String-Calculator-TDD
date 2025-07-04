@@ -2,6 +2,10 @@ package org.example;
 
 public class Calculator {
     public int add(String input) {
-        return 0;
+        if (input == null || input.isEmpty()){
+            return 0;
+        } else {
+            return Integer.parseInt(input);
+        }
     }
 }
