@@ -16,8 +16,14 @@ public class CalculatorTest {
     }
 
     @Test
-    public void testTwoNumbers() {
+    public void testTwoNumbersDelimitedByComma() {
         Calculator calculator = new Calculator();
         assertEquals(3, calculator.add("1,2"));
+    }
+
+    @Test
+    public void testMultipleNumbersDelimitedByComma() {
+        Calculator calculator = new Calculator();
+        assertEquals(6, calculator.add("1,2,3"));
     }
 }
