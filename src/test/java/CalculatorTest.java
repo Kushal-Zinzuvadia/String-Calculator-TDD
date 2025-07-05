@@ -100,4 +100,10 @@ public class CalculatorTest {
         calculator.add("3");
         assertEquals(2, calculator.getCalledCount());
     }
+
+    @Test
+    public void testIgnoreNumbersGreaterThan1000() {
+        Calculator calculator = new Calculator();
+        assertEquals(2, calculator.add("2,1001"));
+    }
 }
