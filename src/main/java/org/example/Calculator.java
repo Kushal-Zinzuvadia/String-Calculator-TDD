@@ -1,8 +1,8 @@
 package org.example;
 
-import java.util.regex.Pattern; // Used for quoting regex special characters
-import java.util.ArrayList;   // Used to collect negative numbers
-import java.util.List;        // Interface for ArrayList
+import java.util.regex.Pattern;     // Used for quoting regex special characters
+import java.util.ArrayList;         // Used to collect negative numbers
+import java.util.List;              // Interface for ArrayList
 
 /**
  * The Calculator class provides functionality to add numbers from a string input.
@@ -24,8 +24,8 @@ public class Calculator {
      * A helper class to encapsulate the parsed delimiter regex and the string containing numbers.
      */
     private static class ParsedInput {
-        final String delimiterRegex; // The regular expression to use for splitting numbers
-        final String numbersString;  // The part of the input string containing only numbers
+        final String delimiterRegex;    // The regular expression to use for splitting numbers
+        final String numbersString;     // The part of the input string containing only numbers
 
         ParsedInput(String delimiterRegex, String numbersString) {
             this.delimiterRegex = delimiterRegex;
@@ -42,15 +42,15 @@ public class Calculator {
      * @return A {@link ParsedInput} object containing the determined delimiter regex and the numbers string.
      */
     private ParsedInput parseInputForDelimiterAndNumbers(String rawInput) {
-        String currentDelimiterRegex = ",|\n"; // Default: comma or newline
+        String currentDelimiterRegex = ",|\n";  // Default: comma or newline
         String numbersContent = rawInput;
 
         // Check if the input starts with a custom delimiter definition
         if (rawInput.startsWith("//")) {
             int newlineIndex = rawInput.indexOf('\n');
             if (newlineIndex != -1) {
-                String delimiterSection = rawInput.substring(2, newlineIndex); // e.g., "[***]" or "[*][%]"
-                numbersContent = rawInput.substring(newlineIndex + 1); // rest after \n
+                String delimiterSection = rawInput.substring(2, newlineIndex);      // e.g., "[***]" or "[*][%]"
+                numbersContent = rawInput.substring(newlineIndex + 1);    // rest after \n
 
                 List<String> delimiters = new ArrayList<>();
 
@@ -64,7 +64,7 @@ public class Calculator {
                     }
                     currentDelimiterRegex = String.join("|", delimiters);
                 } else {
-                    // Single-char delimiter: //;
+                    // Single-char delimiter
                     currentDelimiterRegex = Pattern.quote(delimiterSection);
                 }
             }
@@ -108,14 +108,14 @@ public class Calculator {
         // Iterate through each part, parse it, and accumulate the sum.
         // Also, identify and collect any negative numbers.
         for (String numStr : numberStrings) {
-            String trimmedNumStr = numStr.trim(); // Remove leading/trailing whitespace
+            String trimmedNumStr = numStr.trim();   // Remove leading/trailing whitespace
 
             // Only process non-empty strings resulting from splitting (e.g., from "1,,2")
             if (!trimmedNumStr.isEmpty()) {
-                int number = Integer.parseInt(trimmedNumStr); // Convert string to integer
+                int number = Integer.parseInt(trimmedNumStr);   // Convert string to integer
 
                 if (number < 0) {
-                    foundNegativeNumbers.add(number); // Add negative number to the list
+                    foundNegativeNumbers.add(number);   // Add negative number to the list
                 }
 
                 // Only add if number ≤ 1000

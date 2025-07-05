@@ -72,7 +72,7 @@ public class CalculatorTest {
     public void testMultipleNegativeNumbersThrowsException() {
         // Expect an IllegalArgumentException when multiple negative numbers are passed
         IllegalArgumentException exception = Assert.assertThrows(IllegalArgumentException.class, () -> {
-            calculator.add("-1,2,-3\n-4"); // Input with multiple negative numbers
+            calculator.add("-1,2,-3\n-4");      // Input with multiple negative numbers
         });
         assertTrue(exception.getMessage().contains("negatives not allowed"));
         // Verify that all negative numbers are listed in the exception message

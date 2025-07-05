@@ -38,7 +38,7 @@ All test progress screenshots are organized below.
 | 5    | Support newline delimiters                      | ![](assets/test-results/5.0.png)                   | ![](assets/test-results/5.1.png)  |
 | 6    | Support custom delimiter `//;\n1;2`             | ![](assets/test-results/6.0.png)                   | ![](assets/test-results/6.1.png)  |
 | 7    | Handle negative numbers (throws error)          | ![](assets/test-results/7.0.png)                   | ![](assets/test-results/7.1.png)  |
-| 8    | Track add() call count (compile error)          | ![](assets/test-results/9.0 Compilation error.png) | ![](assets/test-results/9.1.png)  |
+| 8    | Track add() call count (compile error)          | ![](assets/test-results/9.0%20Compilation%20error.png) | ![](assets/test-results/9.1.png)  |
 | 9    | Track add() call count for multiple add() calls | ![](assets/test-results/10.0.png)                  | ![](assets/test-results/10.1.png) |
 | 10   | Ignore numbers > 1000                           | ![](assets/test-results/11.0.png)                  | ![](assets/test-results/11.1.png) |
 | 11   | Support multi-char multi-delims `[**][%%]`      | ![](assets/test-results/12.0.png)                  | ![](assets/test-results/12.1.png) |
