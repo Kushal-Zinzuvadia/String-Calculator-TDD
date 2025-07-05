@@ -87,4 +87,12 @@ public class CalculatorTest {
         // The error would typically be "cannot find symbol" or "method getCalledCount() not found".
         assertEquals(0, Calculator.getCalledCount());
     }
+
+    @Test
+    public void testGetCalledCountAfterAddCalls() {
+        Calculator calculator = new Calculator();
+        calculator.add("1,2");
+        calculator.add("3");
+        assertEquals(2, calculator.getCalledCount());
+    }
 }
