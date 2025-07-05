@@ -80,4 +80,11 @@ public class CalculatorTest {
         String expectedMessagePart = "[-1, -3, -4]";
         assertTrue(exception.getMessage().contains(expectedMessagePart));
     }
+
+    @Test
+    public void testGetCalledCount() {
+        // This line will cause a compilation error because Calculator.getCalledCount() does not exist.
+        // The error would typically be "cannot find symbol" or "method getCalledCount() not found".
+        assertEquals(0, Calculator.getCalledCount());
+    }
 }
