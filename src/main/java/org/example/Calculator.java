@@ -5,9 +5,52 @@ import java.util.regex.Pattern; // Import Pattern for quoting regex special char
 // The Calculator class provides functionality to perform arithmetic operations.
 public class Calculator {
 
+    // Helper class to encapsulate the parsed delimiter and numbers string
+    private static class ParsedInput {
+        String delimiterRegex;
+        String numbersString;
+
+        ParsedInput(String delimiterRegex, String numbersString) {
+            this.delimiterRegex = delimiterRegex;
+            this.numbersString = numbersString;
+        }
+    }
+
+    /**
+     * Parses the input string to determine the delimiter and extract the numbers string.
+     * Supports default delimiters (comma or newline) or a single-character custom delimiter
+     * specified at the beginning of the string in the format "//[delimiter]\n[numbers...]".
+     *
+     * @param input The raw input string to be parsed.
+     * @return A ParsedInput object containing the determined delimiter regex and the numbers string.
+     */
+    private ParsedInput parseInputForDelimiterAndNumbers(String input) {
+        String delimiterRegex = ",|\n"; // Default delimiters: comma or newline
+        String numbersString = input;    // Initially, assume the whole input is numbers
+
+        // Check for a custom delimiter specification.
+        // A custom delimiter is indicated by "//" at the beginning of the string,
+        // followed by a single delimiter character, and then a newline.
+        if (input.startsWith("//")) {
+            int newlineIndex = input.indexOf('\n');
+            // Ensure there is a newline character after the custom delimiter definition
+            // and that the custom delimiter is a single character (input.substring(2, newlineIndex).length() == 1).
+            if (newlineIndex != -1 && (newlineIndex - 2) == 1) { // (newlineIndex - 2) gives the length of the delimiter
+                // Extract the single-character custom delimiter string, which is between "//" and "\n".
+                String customDelimiter = input.substring(2, newlineIndex);
+                // Escape the custom delimiter to treat it as a literal string in regex,
+                // in case it contains special regex characters (e.g., *, +, ., etc.).
+                delimiterRegex = Pattern.quote(customDelimiter);
+                // The actual numbers start after the newline character.
+                numbersString = input.substring(newlineIndex + 1);
+            }
+        }
+        return new ParsedInput(delimiterRegex, numbersString);
+    }
+
     /**
      * Adds numbers provided in a string format.
-     * Supports numbers separated by commas, newlines, or a custom delimiter.
+     * Supports numbers separated by commas, newlines, or a single-character custom delimiter.
      * Custom delimiters are specified at the beginning of the string in the format "//[delimiter]\n[numbers...]".
      *
      * @param input A string containing numbers to be added.
@@ -23,50 +66,31 @@ public class Calculator {
             return 0;
         }
 
-        String delimiterRegex = ",|\n"; // Default delimiters: comma or newline
-        String numbersString = input;    // Initially, assume the whole input is numbers
-
-        // Step 2: Check for a custom delimiter specification.
-        // A custom delimiter is indicated by "//" at the beginning of the string,
-        // followed by the delimiter character(s), and then a newline.
-        if (input.startsWith("//")) {
-            int newlineIndex = input.indexOf('\n');
-            // Ensure there is a newline character after the custom delimiter definition.
-            if (newlineIndex != -1) {
-                // Extract the custom delimiter string, which is between "//" and "\n".
-                String customDelimiter = input.substring(2, newlineIndex);
-                // Escape the custom delimiter to treat it as a literal string in regex,
-                // in case it contains special regex characters (e.g., *, +, ., etc.).
-                delimiterRegex = Pattern.quote(customDelimiter);
-                // The actual numbers start after the newline character.
-                numbersString = input.substring(newlineIndex + 1);
-            }
-        }
+        // Step 2: Extract delimiter and numbers string using the helper method.
+        ParsedInput parsed = parseInputForDelimiterAndNumbers(input);
+        String delimiterRegex = parsed.delimiterRegex;
+        String numbersString = parsed.numbersString;
 
         // Step 3: Split the numbers string into individual number strings using the determined delimiter regex.
-        // If the numbersString is empty after potentially extracting a custom delimiter,
-        // this split might result in an array with a single empty string.
         String[] parts = numbersString.split(delimiterRegex);
 
-        // Step 4: Initialize a variable to store the sum of the numbers.
+        // Step 4: Initialize sum.
         int sum = 0;
+        // Removed List<Integer> negativeNumbers as negative number handling is removed
 
-        // Step 5: Iterate through each number string and add it to the sum.
-        // For each 'part' (which is a string representation of a number) in the 'parts' array:
+        // Step 5: Iterate through each number string, parse, and sum.
         for(String part : parts){
-            // Trim any leading/trailing whitespace from the part to ensure correct parsing.
-            // This handles cases like " 1" or "2 ".
             String trimmedPart = part.trim();
-            // If the trimmed part is empty (e.g., from consecutive delimiters or trailing delimiter), skip it.
             if (!trimmedPart.isEmpty()) {
-                // Convert the string 'trimmedPart' into an integer using Integer.parseInt().
-                // This method will throw a NumberFormatException if 'trimmedPart' is not a valid integer string.
-                // Add the resulting integer value to our running 'sum'.
-                sum += Integer.parseInt(trimmedPart);
+                int number = Integer.parseInt(trimmedPart);
+                // Removed negative number check
+                sum += number;
             }
         }
 
-        // Step 6: Return the final calculated sum.
+        // Step 6: Removed exception throwing for negative numbers.
+
+        // Step 7: Return the final calculated sum.
         return sum;
     }
 }
