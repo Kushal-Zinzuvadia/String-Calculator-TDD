@@ -43,20 +43,29 @@ public class Calculator {
      */
     private ParsedInput parseInputForDelimiterAndNumbers(String rawInput) {
         String currentDelimiterRegex = ",|\n"; // Default: comma or newline
-        String numbersContent = rawInput;       // Assume all input is numbers initially
+        String numbersContent = rawInput;
 
-        // Check if the input starts with a custom delimiter definition "//[delimiter]\n"
+        // Check if the input starts with a custom delimiter definition
         if (rawInput.startsWith("//")) {
             int newlineIndex = rawInput.indexOf('\n');
-            // If a newline is found after "//", extract the custom delimiter
             if (newlineIndex != -1) {
-                // The custom delimiter is the substring between "//" and the newline
-                String customDelimiter = rawInput.substring(2, newlineIndex);
-                // Quote the custom delimiter to treat it literally in regex,
-                // preventing issues if it contains special regex characters (e.g., '*', '+').
-                currentDelimiterRegex = Pattern.quote(customDelimiter);
-                // The actual numbers start after the newline character
-                numbersContent = rawInput.substring(newlineIndex + 1);
+                String delimiterSection = rawInput.substring(2, newlineIndex); // e.g., "[***]" or "[*][%]"
+                numbersContent = rawInput.substring(newlineIndex + 1); // rest after \n
+
+                List<String> delimiters = new ArrayList<>();
+
+                // Match all [delim] parts using regex
+                if (delimiterSection.startsWith("[")) {
+                    // Multiple or long delimiters: //[***][%%]
+                    java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("\\[(.*?)]").matcher(delimiterSection);
+                    while (matcher.find()) {
+                        delimiters.add(Pattern.quote(matcher.group(1)));
+                    }
+                    currentDelimiterRegex = String.join("|", delimiters);
+                } else {
+                    // Single-char delimiter: //;
+                    currentDelimiterRegex = Pattern.quote(delimiterSection);
+                }
             }
         }
         return new ParsedInput(currentDelimiterRegex, numbersContent);
