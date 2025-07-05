@@ -106,4 +106,10 @@ public class CalculatorTest {
         Calculator calculator = new Calculator();
         assertEquals(2, calculator.add("2,1001"));
     }
+
+    @Test
+    public void testCustomDelimiterAnyLength() {
+        Calculator calculator = new Calculator();
+        assertEquals(6, calculator.add("//[***]\n1***2***3"));
+    }
 }
