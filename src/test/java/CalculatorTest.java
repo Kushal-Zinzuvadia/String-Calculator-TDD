@@ -41,4 +41,16 @@ public class CalculatorTest {
         // Test with a custom delimiter and multiple numbers
         assertEquals(15, calculator.add("//*\n1*2*3*4*5"));
     }
+
+    @Test
+    public void testNegativeNumberThrowsException() {
+        Calculator calculator = new Calculator();
+        // Expect an IllegalArgumentException when a negative number is passed
+        IllegalArgumentException exception = Assert.assertThrows(IllegalArgumentException.class, () -> {
+            calculator.add("1,-2,3"); // Input with a negative number
+        });
+        // Verify the exception message contains "negatives not allowed" and the specific negative number
+        assertTrue(exception.getMessage().contains("negatives not allowed"));
+        assertTrue(exception.getMessage().contains("-2"));
+    }
 }
