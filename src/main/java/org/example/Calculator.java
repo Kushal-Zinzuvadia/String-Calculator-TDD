@@ -1,16 +1,21 @@
 package org.example;
 
-import java.util.regex.Pattern; // Import Pattern for quoting regex special characters
-import java.util.ArrayList;
-import java.util.List;
+import java.util.regex.Pattern; // Used for quoting regex special characters
+import java.util.ArrayList;   // Used to collect negative numbers
+import java.util.List;        // Interface for ArrayList
 
-// The Calculator class provides functionality to perform arithmetic operations.
+/**
+ * The Calculator class provides functionality to add numbers from a string input.
+ * It supports various delimiters and handles negative numbers by throwing an exception.
+ */
 public class Calculator {
 
-    // Helper class to encapsulate the parsed delimiter and numbers string
+    /**
+     * A helper class to encapsulate the parsed delimiter regex and the string containing numbers.
+     */
     private static class ParsedInput {
-        String delimiterRegex;
-        String numbersString;
+        final String delimiterRegex; // The regular expression to use for splitting numbers
+        final String numbersString;  // The part of the input string containing only numbers
 
         ParsedInput(String delimiterRegex, String numbersString) {
             this.delimiterRegex = delimiterRegex;
@@ -19,87 +24,87 @@ public class Calculator {
     }
 
     /**
-     * Parses the input string to determine the delimiter and extract the numbers string.
-     * Supports default delimiters (comma or newline) or a custom delimiter specified
-     * at the beginning of the string in the format "//[delimiter]\n[numbers...]".
+     * Parses the input string to identify the delimiter and separate the numbers string.
+     * It supports default delimiters (comma or newline) and custom delimiters.
+     * Custom delimiters are defined at the start of the input in the format "//[delimiter]\n[numbers...]".
      *
-     * @param input The raw input string to be parsed.
-     * @return A ParsedInput object containing the determined delimiter regex and the numbers string.
+     * @param rawInput The original string provided to the add method.
+     * @return A {@link ParsedInput} object containing the determined delimiter regex and the numbers string.
      */
-    private ParsedInput parseInputForDelimiterAndNumbers(String input) {
-        String delimiterRegex = ",|\n"; // Default delimiters: comma or newline
-        String numbersString = input;    // Initially, assume the whole input is numbers
+    private ParsedInput parseInputForDelimiterAndNumbers(String rawInput) {
+        String currentDelimiterRegex = ",|\n"; // Default: comma or newline
+        String numbersContent = rawInput;       // Assume all input is numbers initially
 
-        // Check for a custom delimiter specification.
-        // A custom delimiter is indicated by "//" at the beginning of the string,
-        // followed by the delimiter character(s), and then a newline.
-        if (input.startsWith("//")) {
-            int newlineIndex = input.indexOf('\n');
-            // Ensure there is a newline character after the custom delimiter definition.
+        // Check if the input starts with a custom delimiter definition "//[delimiter]\n"
+        if (rawInput.startsWith("//")) {
+            int newlineIndex = rawInput.indexOf('\n');
+            // If a newline is found after "//", extract the custom delimiter
             if (newlineIndex != -1) {
-                // Extract the custom delimiter string, which is between "//" and "\n".
-                String customDelimiter = input.substring(2, newlineIndex);
-                // Escape the custom delimiter to treat it as a literal string in regex,
-                // in case it contains special regex characters (e.g., *, +, ., etc.).
-                delimiterRegex = Pattern.quote(customDelimiter);
-                // The actual numbers start after the newline character.
-                numbersString = input.substring(newlineIndex + 1);
+                // The custom delimiter is the substring between "//" and the newline
+                String customDelimiter = rawInput.substring(2, newlineIndex);
+                // Quote the custom delimiter to treat it literally in regex,
+                // preventing issues if it contains special regex characters (e.g., '*', '+').
+                currentDelimiterRegex = Pattern.quote(customDelimiter);
+                // The actual numbers start after the newline character
+                numbersContent = rawInput.substring(newlineIndex + 1);
             }
         }
-        return new ParsedInput(delimiterRegex, numbersString);
+        return new ParsedInput(currentDelimiterRegex, numbersContent);
     }
 
     /**
-     * Adds numbers provided in a string format.
-     * Supports numbers separated by commas, newlines, or a custom delimiter.
-     * Custom delimiters are specified at the beginning of the string in the format "//[delimiter]\n[numbers...]".
-     * Throws an IllegalArgumentException if any negative numbers are found.
+     * Adds numbers from a given string.
      *
-     * @param input A string containing numbers to be added.
-     * Examples: "1,2,3", "1\n2", "5", "", or "//;\n1;2".
-     * @return The sum of the numbers, or 0 if the input is null or empty.
-     * @throws NumberFormatException if any part of the input string cannot be converted into a valid integer.
-     * @throws IllegalArgumentException if negative numbers are present in the input.
+     * This method supports:
+     * - Empty or null strings (returns 0).
+     * - Numbers separated by commas (`,`) or newlines (`\n`).
+     * - Custom single-character delimiters specified at the beginning of the string
+     * in the format "//[delimiter]\n[numbers...]".
+     * - Throws an {@link IllegalArgumentException} if any negative numbers are found,
+     * listing all negative numbers in the exception message.
+     *
+     * @param inputString The string containing numbers to be summed.
+     * @return The sum of the numbers.
+     * @throws NumberFormatException if any part of the input string cannot be converted to an integer.
+     * @throws IllegalArgumentException if the input string contains one or more negative numbers.
      */
-    public int add(String input) {
-        // Step 1: Handle null or empty input.
-        // If the input string is null or has no characters, there are no numbers to add,
-        // so we return 0 as per the requirements.
-        if (input == null || input.isEmpty()){
+    public int add(String inputString) {
+        // Handle null or empty input: return 0 as there are no numbers to add.
+        if (inputString == null || inputString.isEmpty()){
             return 0;
         }
 
-        // Step 2: Extract delimiter and numbers string using the helper method.
-        ParsedInput parsed = parseInputForDelimiterAndNumbers(input);
-        String delimiterRegex = parsed.delimiterRegex;
-        String numbersString = parsed.numbersString;
+        // Parse the input to get the correct delimiter regex and the string containing numbers.
+        ParsedInput parsedData = parseInputForDelimiterAndNumbers(inputString);
 
-        // Step 3: Split the numbers string into individual number strings using the determined delimiter regex.
-        String[] parts = numbersString.split(delimiterRegex);
+        // Split the numbers string into individual number strings using the determined delimiter.
+        String[] numberStrings = parsedData.numbersString.split(parsedData.delimiterRegex);
 
-        // Step 4: Initialize sum and a list to store negative numbers.
-        int sum = 0;
-        List<Integer> negativeNumbers = new ArrayList<>();
+        int totalSum = 0; // Accumulator for the sum of numbers
+        List<Integer> foundNegativeNumbers = new ArrayList<>(); // List to collect any negative numbers
 
-        // Step 5: Iterate through each number string, parse, sum, and check for negatives.
-        for(String part : parts){
-            String trimmedPart = part.trim();
-            if (!trimmedPart.isEmpty()) {
-                int number = Integer.parseInt(trimmedPart);
+        // Iterate through each part, parse it, and accumulate the sum.
+        // Also, identify and collect any negative numbers.
+        for (String numStr : numberStrings) {
+            String trimmedNumStr = numStr.trim(); // Remove leading/trailing whitespace
+
+            // Only process non-empty strings resulting from splitting (e.g., from "1,,2")
+            if (!trimmedNumStr.isEmpty()) {
+                int number = Integer.parseInt(trimmedNumStr); // Convert string to integer
+
                 if (number < 0) {
-                    //Logic already robust to handle multiple negative numbers
-                    negativeNumbers.add(number);
+                    foundNegativeNumbers.add(number); // Add negative number to the list
                 }
-                sum += number;
+                totalSum += number; // Add number to the total sum
             }
         }
 
-        // Step 6: Throw exception if negative numbers were found.
-        if (!negativeNumbers.isEmpty()) {
-            throw new IllegalArgumentException("negatives not allowed: " + negativeNumbers.toString());
+        // If any negative numbers were found, throw an IllegalArgumentException.
+        if (!foundNegativeNumbers.isEmpty()) {
+            throw new IllegalArgumentException("negatives not allowed: " + foundNegativeNumbers.toString());
         }
 
-        // Step 7: Return the final calculated sum.
-        return sum;
+        // Return the final calculated sum.
+        return totalSum;
     }
 }
