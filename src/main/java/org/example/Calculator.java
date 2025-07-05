@@ -10,6 +10,12 @@ import java.util.List;        // Interface for ArrayList
  */
 public class Calculator {
 
+    private static int callCount = 0;
+
+    public static int getCalledCount() {
+        return callCount;
+    }
+
     /**
      * A helper class to encapsulate the parsed delimiter regex and the string containing numbers.
      */
