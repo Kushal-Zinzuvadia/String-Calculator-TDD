@@ -5,34 +5,39 @@ public class Calculator {
 
     /**
      * Adds numbers provided in a string format.
-     * Supports comma-separated numbers and handles empty or null input.
+     * Supports numbers separated by commas or newlines, and handles empty or null input.
      *
-     * @param input A string containing numbers to be added, separated by commas.
-     * Example: "1,2,3" or "10" or ""
+     * @param input A string containing numbers to be added, separated by commas (',') or newlines ('\n').
+     * Examples: "1,2,3", "1\n2", "5", or an empty string "".
      * @return The sum of the numbers, or 0 if the input is null or empty.
-     * @throws NumberFormatException if any part of the input string is not a valid integer.
+     * @throws NumberFormatException if any part of the input string cannot be converted into a valid integer.
      */
     public int add(String input) {
-        // If the input is null or an empty string, return 0 as there are no numbers to add.
+        // Step 1: Handle null or empty input.
+        // If the input string is null or has no characters, there are no numbers to add,
+        // so we return 0 as per the requirements.
         if (input == null || input.isEmpty()){
             return 0;
         }
-        // If the input contains a comma, it indicates multiple numbers separated by commas.
-        else if(input.contains(",")){
-            // Split the input string by the comma delimiter to get individual number strings.
-            String[] parts = input.split(",");
-            int sum = 0; // Initialize sum to 0.
-            // Iterate over each part (number string) obtained from the split.
-            for(String part : parts){
-                // Convert each number string to an integer and add it to the sum.
-                sum += Integer.parseInt(part);
-            }
-            return sum; // Return the total sum of all numbers.
+
+        // Step 2: Split the input string into individual number strings.
+        // We use a regular expression ",|\n" to split the string by either a comma OR a newline character.
+        // This allows the calculator to handle inputs like "1,2,3" and "1\n2\n3" or even "1\n2,3".
+        String[] parts = input.split(",|\n");
+
+        // Step 3: Initialize a variable to store the sum of the numbers.
+        int sum = 0;
+
+        // Step 4: Iterate through each number string and add it to the sum.
+        // For each 'part' (which is a string representation of a number) in the 'parts' array:
+        for(String part : parts){
+            // Convert the string 'part' into an integer using Integer.parseInt().
+            // This method will throw a NumberFormatException if 'part' is not a valid integer string.
+            // Add the resulting integer value to our running 'sum'.
+            sum += Integer.parseInt(part);
         }
-        // If the input does not contain a comma, it's a single number.
-        else {
-            // Convert the single number string to an integer and return it.
-            return Integer.parseInt(input);
-        }
+
+        // Step 5: Return the final calculated sum.
+        return sum;
     }
 }
