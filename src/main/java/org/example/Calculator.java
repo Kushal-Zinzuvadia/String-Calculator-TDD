@@ -107,7 +107,11 @@ public class Calculator {
                 if (number < 0) {
                     foundNegativeNumbers.add(number); // Add negative number to the list
                 }
-                totalSum += number; // Add number to the total sum
+
+                // Only add if number ≤ 1000
+                if (number <= 1000) {
+                    totalSum += number;
+                }
             }
         }
 
