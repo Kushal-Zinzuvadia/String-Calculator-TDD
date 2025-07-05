@@ -26,4 +26,9 @@ public class CalculatorTest {
         Calculator calculator = new Calculator();
         assertEquals(6, calculator.add("1,2,3"));
     }
+
+    @Test public void testNumbersDelimitedByCommaOrNewline(){
+        Calculator calculator = new Calculator();
+        assertEquals(6, calculator.add("1\n2,3"));
+    }
 }
