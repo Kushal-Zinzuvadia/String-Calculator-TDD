@@ -59,6 +59,7 @@ public class Calculator {
                     // Multiple or long delimiters: //[***][%%]
                     java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("\\[(.*?)]").matcher(delimiterSection);
                     while (matcher.find()) {
+                        // Allow multiple delimiters
                         delimiters.add(Pattern.quote(matcher.group(1)));
                     }
                     currentDelimiterRegex = String.join("|", delimiters);
