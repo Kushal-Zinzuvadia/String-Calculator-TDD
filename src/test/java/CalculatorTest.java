@@ -53,4 +53,16 @@ public class CalculatorTest {
         assertTrue(exception.getMessage().contains("negatives not allowed"));
         assertTrue(exception.getMessage().contains("-2"));
     }
+
+    @Test
+    public void testMultipleNegativeNumbersThrowsException() {
+        Calculator calculator = new Calculator();
+        IllegalArgumentException exception = Assert.assertThrows(IllegalArgumentException.class, () -> {
+            calculator.add("-3,-5"); // Input with multiple negative numbers
+        });
+        assertTrue(exception.getMessage().contains("negatives not allowed"));
+        // Verify that all negative numbers are listed in the exception message
+        assertTrue(exception.getMessage().contains("-3"));
+        assertTrue(exception.getMessage().contains("-5"));
+    }
 }
