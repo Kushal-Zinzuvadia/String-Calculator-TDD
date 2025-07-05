@@ -56,7 +56,7 @@ public class Calculator {
 
                 // Match all [delim] parts using regex
                 if (delimiterSection.startsWith("[")) {
-                    // Multiple or long delimiters: //[***][%%]
+                    // Allow Multiple or long delimiters of various lengths: [***][%%]
                     java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("\\[(.*?)]").matcher(delimiterSection);
                     while (matcher.find()) {
                         // Allow multiple delimiters
