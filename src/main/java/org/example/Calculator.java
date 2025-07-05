@@ -16,6 +16,10 @@ public class Calculator {
         return callCount;
     }
 
+    public static void resetCallCount() {
+        callCount = 0;
+    }
+
     /**
      * A helper class to encapsulate the parsed delimiter regex and the string containing numbers.
      */
@@ -75,6 +79,8 @@ public class Calculator {
      * @throws IllegalArgumentException if the input string contains one or more negative numbers.
      */
     public int add(String inputString) {
+        callCount++;
+
         // Handle null or empty input: return 0 as there are no numbers to add.
         if (inputString == null || inputString.isEmpty()){
             return 0;

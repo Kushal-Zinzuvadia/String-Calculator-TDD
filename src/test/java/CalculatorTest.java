@@ -17,6 +17,11 @@ public class CalculatorTest {
         calculator = new Calculator();
     }
 
+    @Before
+    public void resetCallCount() {
+        Calculator.resetCallCount();
+    }
+
     @Test
     public void testEmptyStringReturnsZero() {
         assertEquals(0, calculator.add(""));
