@@ -1,6 +1,8 @@
 package org.example;
 
 import java.util.regex.Pattern; // Import Pattern for quoting regex special characters
+import java.util.ArrayList;
+import java.util.List;
 
 // The Calculator class provides functionality to perform arithmetic operations.
 public class Calculator {
@@ -18,8 +20,8 @@ public class Calculator {
 
     /**
      * Parses the input string to determine the delimiter and extract the numbers string.
-     * Supports default delimiters (comma or newline) or a single-character custom delimiter
-     * specified at the beginning of the string in the format "//[delimiter]\n[numbers...]".
+     * Supports default delimiters (comma or newline) or a custom delimiter specified
+     * at the beginning of the string in the format "//[delimiter]\n[numbers...]".
      *
      * @param input The raw input string to be parsed.
      * @return A ParsedInput object containing the determined delimiter regex and the numbers string.
@@ -30,13 +32,12 @@ public class Calculator {
 
         // Check for a custom delimiter specification.
         // A custom delimiter is indicated by "//" at the beginning of the string,
-        // followed by a single delimiter character, and then a newline.
+        // followed by the delimiter character(s), and then a newline.
         if (input.startsWith("//")) {
             int newlineIndex = input.indexOf('\n');
-            // Ensure there is a newline character after the custom delimiter definition
-            // and that the custom delimiter is a single character (input.substring(2, newlineIndex).length() == 1).
-            if (newlineIndex != -1 && (newlineIndex - 2) == 1) { // (newlineIndex - 2) gives the length of the delimiter
-                // Extract the single-character custom delimiter string, which is between "//" and "\n".
+            // Ensure there is a newline character after the custom delimiter definition.
+            if (newlineIndex != -1) {
+                // Extract the custom delimiter string, which is between "//" and "\n".
                 String customDelimiter = input.substring(2, newlineIndex);
                 // Escape the custom delimiter to treat it as a literal string in regex,
                 // in case it contains special regex characters (e.g., *, +, ., etc.).
@@ -50,13 +51,15 @@ public class Calculator {
 
     /**
      * Adds numbers provided in a string format.
-     * Supports numbers separated by commas, newlines, or a single-character custom delimiter.
+     * Supports numbers separated by commas, newlines, or a custom delimiter.
      * Custom delimiters are specified at the beginning of the string in the format "//[delimiter]\n[numbers...]".
+     * Throws an IllegalArgumentException if any negative numbers are found.
      *
      * @param input A string containing numbers to be added.
      * Examples: "1,2,3", "1\n2", "5", "", or "//;\n1;2".
      * @return The sum of the numbers, or 0 if the input is null or empty.
      * @throws NumberFormatException if any part of the input string cannot be converted into a valid integer.
+     * @throws IllegalArgumentException if negative numbers are present in the input.
      */
     public int add(String input) {
         // Step 1: Handle null or empty input.
@@ -74,21 +77,26 @@ public class Calculator {
         // Step 3: Split the numbers string into individual number strings using the determined delimiter regex.
         String[] parts = numbersString.split(delimiterRegex);
 
-        // Step 4: Initialize sum.
+        // Step 4: Initialize sum and a list to store negative numbers.
         int sum = 0;
-        // Removed List<Integer> negativeNumbers as negative number handling is removed
+        List<Integer> negativeNumbers = new ArrayList<>();
 
-        // Step 5: Iterate through each number string, parse, and sum.
+        // Step 5: Iterate through each number string, parse, sum, and check for negatives.
         for(String part : parts){
             String trimmedPart = part.trim();
             if (!trimmedPart.isEmpty()) {
                 int number = Integer.parseInt(trimmedPart);
-                // Removed negative number check
+                if (number < 0) {
+                    negativeNumbers.add(number);
+                }
                 sum += number;
             }
         }
 
-        // Step 6: Removed exception throwing for negative numbers.
+        // Step 6: Throw exception if negative numbers were found.
+        if (!negativeNumbers.isEmpty()) {
+            throw new IllegalArgumentException("negatives not allowed: " + negativeNumbers.toString());
+        }
 
         // Step 7: Return the final calculated sum.
         return sum;
