@@ -87,6 +87,7 @@ public class Calculator {
             if (!trimmedPart.isEmpty()) {
                 int number = Integer.parseInt(trimmedPart);
                 if (number < 0) {
+                    //Logic already robust to handle multiple negative numbers
                     negativeNumbers.add(number);
                 }
                 sum += number;
